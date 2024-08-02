@@ -13,16 +13,6 @@ public class Main {
 	
 	static int N, K;
 	
-	static int counting(String str) {
-		int cnt = 0;
-		
-		for(int i = 0 ; i < str.length(); i ++) {
-			if(str.charAt(i) == '1') cnt++;
-		}
-		
-		return cnt;
-	}
-	
 	public static void main(String[] args) throws Exception {
 		st = new StringTokenizer(br.readLine());
 		
@@ -31,8 +21,8 @@ public class Main {
 		K = Integer.parseInt(st.nextToken());
 
 		int need = 0;
-		
-		while(counting(Integer.toBinaryString(N + need)) > K) {
+	
+		while(Integer.bitCount(N + need) > K) {
 			need++;
 		}
 		
