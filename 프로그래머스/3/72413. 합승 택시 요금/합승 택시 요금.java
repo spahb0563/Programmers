@@ -1,13 +1,65 @@
+import java.util.*;
+
 class Solution {
+    
+    static Map<Integer, List<Edge>> adjacent;
+    
+    static int[] dijkstra(int[] arr, int from) {
+        arr[from] = 0;
+        
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        
+        pq.add(new Edge(from, 0));
+        
+        while(!pq.isEmpty()) {
+            Edge edge = pq.poll();
+            
+            int to = edge.to;
+            
+            List<Edge> list = adjacent.get(to);
+            
+            for(int i = 0 ; i < list.size() ; i ++) {
+                Edge next = list.get(i);
+                
+                if(arr[next.to] > arr[to] + next.weight) {
+                    arr[next.to] = arr[to] + next.weight;
+                    pq.add(new Edge(next.to, arr[next.to]));
+                }
+            }
+        }
+        return arr;
+    }
+    
+    static class Edge implements Comparable{
+        int to;
+        
+        int weight;
+        
+        Edge(int to, int weight) {
+            this.to = to;
+            this.weight = weight;
+        }
+        
+        public int compareTo(Object edge) {
+            return this.weight - ((Edge)edge).weight;
+        }
+    }
+    
     public int solution(int n, int s, int a, int b, int[][] fares) {
         int answer = Integer.MAX_VALUE;
         
-        int[][] map = new int[n+1][n+1];
+        adjacent = new HashMap<>();
         
-        for(int i = 0 ; i < n + 1 ; i ++) {
-            for(int j = 0 ; j < n + 1 ; j ++) {
-                if(i != j) map[i][j] = 20000001;
-            }
+        int[] fromS = new int[n + 1];
+        int[] fromA = new int[n + 1];
+        int[] fromB = new int[n + 1];
+        
+        for(int i = 1 ; i < n + 1 ; i ++) {
+            if(i != s) fromS[i] = 20000000;
+            if(i != a) fromA[i] = 20000000;
+            if(i != b) fromB[i] = 20000000;
+            
+            adjacent.put(i, new ArrayList<>());
         }
         
         for(int i = 0 ; i < fares.length ; i ++) {
@@ -15,21 +67,16 @@ class Solution {
             int to = fares[i][1];
             int distance = fares[i][2];
             
-            map[from][to] = distance;
-            map[to][from] = distance;
-            
+            adjacent.get(from).add(new Edge(to, distance));
+            adjacent.get(to).add(new Edge(from, distance));
         }
         
-		for (int k = 1; k < n+1; k++) {
-			for (int i = 1; i < n+1; i++) {
-				for (int j = 1; j < n+1; j++) {
-					map[i][j] = Math.min(map[i][j], map[i][k] + map[k][j]);
-				}
-			}
-		}
+        fromS = dijkstra(fromS, s);
+        fromB = dijkstra(fromB, b);
+        fromA = dijkstra(fromA, a);
         
         for(int i = 1 ; i < n + 1 ; i ++) {
-            answer = Math.min(map[s][i] + map[i][b] + map[i][a], answer);                        
+            answer = Math.min(fromS[i] + fromB[i] + fromA[i], answer);
         }
         
         return answer;
