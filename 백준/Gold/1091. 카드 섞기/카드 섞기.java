@@ -5,9 +5,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -33,10 +31,19 @@ public class Main {
 	static boolean check(int[] arr, List<List<Integer>> list) {
 		for(int i = 0 ; i < arr.length ; i ++) {
 			if(Collections.binarySearch(list.get(i % 3), arr[i]) < 0) return false;
-//			if(!list.get(i % 3).contains(arr[i])) return false;
 		}
 		return true;
 	}
+	
+    static int getArrayHash(int[] arr) {
+        int hash = 0;
+        int prime = 31;
+        for (int num : arr) {
+            hash = hash * prime + num;
+        }
+        return hash;
+    }
+
 	
     public static void main(String[] args) throws Exception{
     	
@@ -69,25 +76,20 @@ public class Main {
     		arr[i] = i;
     	}
     	
-    	Set<String> set = new HashSet<>();
-    	
     	int count = 0;
     	
     	int[] newArr = arr;
     	
     	while(true) {
-    		int size = set.size();
-    		
-    		set.add(Arrays.toString(newArr));
-    		
     		if(check(newArr, list)) break;
     		
-    		if(set.size() == size) {
+    		
+    		newArr = shuffle(newArr, S);
+    		if(Arrays.equals(arr, newArr)) {
     			count = -1;
     			break;
     		}
     		
-    		newArr = shuffle(newArr, S);
     		count++;
     	}
     	
