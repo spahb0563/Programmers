@@ -23,18 +23,6 @@ class Solution {
             max = Math.max(max, dp[i-1]);
             answer = Math.max(dp[i], answer);
         }
-        
-        for(int i = 0 ; i < length ; i ++) {
-            dp[i] = sticker[length - 1 - i];
-        }
-        
-        max = 0;
-        
-        for(int i = 1 ; i < length - 1; i ++) {
-            dp[i] = Math.max(dp[i-1], dp[i] + max);
-            max = Math.max(max, dp[i-1]);
-            answer = Math.max(dp[i], answer);
-        }
     
         for(int i = 1 ; i < length ; i ++) {
             dp[i-1] = sticker[i];
