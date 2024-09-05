@@ -15,9 +15,9 @@ class Solution {
     static String answer = "";
     
     static void dfs(String[] arr, String from, int r, int depth) {
+        if(!answer.equals("")) return;
         
         if(r == depth) {
-            
             set.clear();
             set.add("ICN");
             StringBuffer sb = new StringBuffer("ICN ");
@@ -28,15 +28,9 @@ class Solution {
             }
             
             if(set.size() == n) {
-                if(answer.equals("")) {
-                    answer = sb.toString();
-                }else {
-                    
-                    if(answer.compareTo(sb.toString()) > 0) answer = sb.toString();
-                    
-                }
+                answer = sb.toString();
             }
-            
+            return;
         }
         
         if(tikets.get(from) != null) {
@@ -73,6 +67,12 @@ class Solution {
             visit.get(from).add(false);
             set.add(from);
             set.add(to);
+        }
+        
+        for(String str : set) {
+            if(tikets.containsKey(str)) {
+                Collections.sort(tikets.get(str));
+            }
         }
         
         n = set.size();
