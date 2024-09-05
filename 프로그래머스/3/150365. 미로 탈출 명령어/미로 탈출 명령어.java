@@ -53,7 +53,7 @@ class Solution {
         
         if(distance[x-1][y-1] > k) return "impossible";
         
-        if(distance[x-1][y-1] == 1 && k % 2 != 1) return "impossible";
+        if(distance[x-1][y-1] % 2 != k % 2) return "impossible";
         
         dfs(new char[k], x-1, y-1, k, 0);
         
