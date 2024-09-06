@@ -13,7 +13,11 @@ class Solution {
                 
         TreeSet<Integer> set = new TreeSet<>();
         
+        Map<Integer, Integer> next = new HashMap<>();
+        
         int max = 0;
+        
+        int[] sum = new int[scores.length];
         
         Integer[] arr = new Integer[scores.length];
         
@@ -22,11 +26,8 @@ class Solution {
             
             if(map.get(scores[i][0]) < scores[i][1]) map.put(scores[i][0], scores[i][1]);
             
-            set.add(scores[i][0]);
-            
-            max = Math.max(max, scores[i][0]);
-            
             arr[i] = scores[i][0];
+            sum[i] = scores[i][0] + scores[i][1]; 
         }
         
         Arrays.sort(arr, Comparator.reverseOrder());
@@ -34,20 +35,19 @@ class Solution {
         for(int i = 1 ; i < arr.length ; i ++) {
             if(map.get(arr[i-1]) > map.get(arr[i])) map.put(arr[i], map.get(arr[i-1]));
         }
+        
+        for(int i = arr.length - 1 ; i > 0 ; i --) {
+            if(arr[i] < arr[i-1]) next.put(arr[i], arr[i-1]);
+        }
                 
         for(int i = 0 ; i < scores.length ; i++) {
             boolean check = true;
             
-            Integer higher = scores[i][0];
-            
-            while(set.higher(higher) != null) {
-                higher = set.higher(higher);
+            if(next.containsKey(scores[i][0])) {
+                int n = next.get(scores[i][0]);
                 
-                if(map.containsKey(higher) && map.get(higher) > scores[i][1]) {
+                if(map.containsKey(n) && map.get(n) > scores[i][1]) {
                     check = false;
-                    break;
-                }else {
-                    break;
                 }
             }
             
@@ -57,7 +57,7 @@ class Solution {
         }
         
         Collections.sort(list, (o1, o2)->{
-           return (scores[o2][0] + scores[o2][1]) - (scores[o1][0] + scores[o1][1]);
+           return (sum[o2]) - (sum[o1]);
         });
         
         int rank = 1;
@@ -75,11 +75,10 @@ class Solution {
             }else {
                 count ++;
             }
-            // System.out.println("rank : " + rank + " score : " + (scores[list.get(i)][0] + scores[list.get(i)][1]) + " current : " + current + " count : " + count);
             
             current = scores[list.get(i)][0] + scores[list.get(i)][1];
             
-            if(current == (scores[0][0] + scores[0][1])) return rank;
+            if(current == sum[0]) return rank;
             
         }
         
