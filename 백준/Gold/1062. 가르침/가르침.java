@@ -25,21 +25,20 @@ public class Main {
         if(depth == r) {
             int count = 0;
 
-            boolean[] alp = new boolean[26];
-
+            int bitmask = 0;
             for (char c : arr) {
-                alp[c - 'a'] = true;
+                bitmask |= (1 << (c - 'a'));
             }
 
-            for(String word : words) {
+            for (String word : words) {
                 boolean check = true;
                 for (char c : word.toCharArray()) {
-                    if(!alp[c - 'a']) {
+                    if ((bitmask & (1 << (c - 'a'))) == 0) {
                         check = false;
                         break;
                     }
                 }
-                if(check) count++;
+                if (check) count++;
             }
 
             maxCount = Math.max(maxCount, count);
@@ -67,20 +66,11 @@ public class Main {
 
         Pattern pattern = Pattern.compile("[antic]");
 
-        Set<Character> set = new HashSet<>();
         for(int i = 0 ; i < N ; i ++) {
             words[i] = pattern.matcher(br.readLine()).replaceAll("");
             for(char c : words[i].toCharArray()) {
-                set.add(c);
                 haveToKnowSet.add(c);
             }
-            StringBuffer sb = new StringBuffer();
-            for(char c : set) {
-                sb.append(c);
-            }
-            words[i] = sb.toString();
-
-            set.clear();
         }
 
         haveToKnowList = new ArrayList<Character>(haveToKnowSet);
