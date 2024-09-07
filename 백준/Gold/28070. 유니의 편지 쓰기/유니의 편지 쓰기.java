@@ -6,11 +6,9 @@ public class Main {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	
 	static int toIdx(String date) {
-		String[] split = date.split("-");
+		int year = Integer.parseInt(date.substring(0, 4));
 		
-		int year = Integer.parseInt(split[0]);
-		
-		int month = Integer.parseInt(split[1]);
+		int month = Integer.parseInt(date.substring(5, date.length()));
 		
 		int idx = ((year - 2000) * 12) + (month - 1);
 		
