@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 public class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
     static StringTokenizer st;
 
@@ -64,13 +63,20 @@ public class Main {
 
         words = new String[N];
 
-        Pattern pattern = Pattern.compile("[antic]");
+        Set<Character> set = new HashSet<>();
 
         for(int i = 0 ; i < N ; i ++) {
-            words[i] = pattern.matcher(br.readLine()).replaceAll("");
+            StringBuffer sb = new StringBuffer();
+            words[i] = br.readLine();
+
             for(char c : words[i].toCharArray()) {
-                haveToKnowSet.add(c);
+                if(c != 'a' && c != 't' && c != 'i' && c != 'c' && c != 'n') {
+                    sb.append(c);
+                    haveToKnowSet.add(c);
+                }
             }
+
+            words[i] = sb.toString();
         }
 
         haveToKnowList = new ArrayList<Character>(haveToKnowSet);
@@ -83,9 +89,7 @@ public class Main {
             maxCount = 0;
         }
 
-        bw.write(Integer.toString(maxCount));
-        bw.flush();
-        bw.close();
+        System.out.println(Integer.toString(maxCount));
         br.close();
     }
 }
