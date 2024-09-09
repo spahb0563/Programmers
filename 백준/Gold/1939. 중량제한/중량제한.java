@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -15,52 +13,29 @@ public class Main {
 	
 	static int N,M,start,end;
 	
-	static List<Node>[] adjacent;
+	static List<Edge> edgeList;
 	
 	static int max;
 	
 	static Stack<Integer> stack = new Stack<>();
 	
-	static boolean dfs(int weight) {
+	static int find(int[] arr, int a) {
+		if(a == arr[a]) return a;
 		
-		stack.clear();
+		return arr[a] = find(arr, arr[a]);
+	}
+	
+	static void union(int[] arr, int a, int b) {
+		a = find(arr, a);
+		b = find(arr, b);
 		
-		stack.push(start);
+		if(a == b) return;
 		
-		List<Node> visited = new ArrayList<>();
-		
-		while(!stack.isEmpty()) {
-			int from = stack.pop();
-			
-			if(from == end) {
-				max = Math.max(max, weight);
-				for(Node n : visited) {
-					n.visit = false;
-				}
-				return true;
-			}
-			
-			for(int i = 0 ; i < adjacent[from].size(); i ++) {
-				Node node = adjacent[from].get(i);
-				
-				int to = from == node.from ? node.to : node.from;
-				int capacity = node.capacity; 
-				
-				if(capacity < weight) break;
-				
-				if(!node.visit && capacity >= weight) {
-					stack.push(to);
-					node.visit = true;
-					visited.add(node);
-				}
-			}
+		if(a > b) {
+			arr[a] = b;
+		}else{
+			arr[b] = a;
 		}
-		
-		for(Node n : visited) {
-			n.visit = false;
-		}
-		
-		return false;
 	}
 	
 	static int biarySearch(int maxCapa) {
@@ -71,7 +46,19 @@ public class Main {
 		while(left < right) {
 			int mid = (left + right) / 2;
 			
-			if(dfs(mid)) {
+			int[] arr = new int[N + 1];
+			
+			for(int i = 0 ; i < arr.length ; i ++) {
+				arr[i] = i;
+			}
+			
+			for(Edge edge : edgeList) {
+				if(edge.weight >= mid) {
+					union(arr, edge.from, edge.to);
+				}
+			}
+			
+			if(find(arr, start) == find(arr, end)) {
 				left = mid + 1;
 			}else {
 				right = mid;
@@ -82,31 +69,16 @@ public class Main {
 	}
 	
 	
-	static class Node {
+	static class Edge {
 		int from;
 		int to;
-		int capacity;
-		boolean visit;
+		int weight;
 		
-		Node(int from, int to, int capacity) {
+		Edge(int from, int to, int weight) {
 			this.from = from;
 			this.to = to;
-			this.capacity = capacity;
-			visit = false;
+			this.weight = weight;
 		}
-		
-		@Override
-		public int hashCode() {
-			return Objects.hash(from, to, capacity);
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			Node n = (Node) obj;
-			
-			return from == n.from && to == n.to && capacity == n.capacity;  
-		}
-		
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -115,7 +87,7 @@ public class Main {
 		N = Integer.parseInt(st.nextToken()); 
 		M = Integer.parseInt(st.nextToken());
 		
-		adjacent = new ArrayList[N+1];
+		edgeList = new ArrayList<>();
 		
 		int maxCapa = 0;
 		
@@ -128,28 +100,11 @@ public class Main {
 			
 			int capacity = Integer.parseInt(st.nextToken());
 			
-			if(adjacent[from] == null) {
-				adjacent[from] = new ArrayList<>();
-			}
+			Edge edge = new Edge(from, to, capacity);
 			
-			if(adjacent[to] == null) {
-				adjacent[to] = new ArrayList<>();				
-			}
-			
-			Node node = new Node(from, to, capacity);
-			
-			adjacent[from].add(node);
-			adjacent[to].add(node);
+			edgeList.add(edge);
 			
 			maxCapa = Math.max(maxCapa, capacity);
-		}
-		
-		for(List<Node> list : adjacent) {
-			if(list != null) {
-				Collections.sort(list, (o1, o2)->{
-					return o2.capacity - o1.capacity;
-				});
-			}
 		}
 		
 		st = new StringTokenizer(br.readLine());
@@ -157,9 +112,7 @@ public class Main {
 		start = Integer.parseInt(st.nextToken());
 		end = Integer.parseInt(st.nextToken());
 		
-		biarySearch(maxCapa);
-		
-		System.out.println(Integer.toString(max));
+		System.out.println(Integer.toString(biarySearch(maxCapa)));
 		br.close();
 			
 	}
