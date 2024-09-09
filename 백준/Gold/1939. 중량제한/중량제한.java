@@ -2,9 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -23,20 +21,22 @@ public class Main {
 	
 	static Stack<Integer> stack = new Stack<>();
 	
-	static Map<Node, Boolean> visit = new HashMap<>();
-	
 	static boolean dfs(int weight) {
 		
 		stack.clear();
-		visit.clear();
 		
 		stack.push(start);
+		
+		List<Node> visited = new ArrayList<>();
 		
 		while(!stack.isEmpty()) {
 			int from = stack.pop();
 			
 			if(from == end) {
 				max = Math.max(max, weight);
+				for(Node n : visited) {
+					n.visit = false;
+				}
 				return true;
 			}
 			
@@ -48,11 +48,16 @@ public class Main {
 				
 				if(capacity < weight) break;
 				
-				if(!visit.containsKey(node) && capacity >= weight) {
+				if(!node.visit && capacity >= weight) {
 					stack.push(to);
-					visit.put(node, true);
+					node.visit = true;
+					visited.add(node);
 				}
 			}
+		}
+		
+		for(Node n : visited) {
+			n.visit = false;
 		}
 		
 		return false;
@@ -81,11 +86,13 @@ public class Main {
 		int from;
 		int to;
 		int capacity;
+		boolean visit;
 		
 		Node(int from, int to, int capacity) {
 			this.from = from;
 			this.to = to;
 			this.capacity = capacity;
+			visit = false;
 		}
 		
 		@Override
