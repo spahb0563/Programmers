@@ -25,7 +25,7 @@ public class Main {
 	
 	static Map<Node, Boolean> visit = new HashMap<>();
 	
-	static boolean bfs(int weight) {
+	static boolean dfs(int weight) {
 		
 		stack.clear();
 		visit.clear();
@@ -43,7 +43,7 @@ public class Main {
 			for(int i = 0 ; i < adjacent.get(from).size(); i ++) {
 				Node node = adjacent.get(from).get(i);
 				
-				int to = node.to;
+				int to = from == node.from ? node.to : node.from;
 				int capacity = node.capacity; 
 				
 				if(capacity < weight) break;
@@ -66,7 +66,7 @@ public class Main {
 		while(left < right) {
 			int mid = (left + right) / 2;
 			
-			if(bfs(mid)) {
+			if(dfs(mid)) {
 				left = mid + 1;
 			}else {
 				right = mid;
@@ -90,14 +90,14 @@ public class Main {
 		
 		@Override
 		public int hashCode() {
-			return Objects.hash(Math.max(from, to), Math.min(from, to), capacity);
+			return Objects.hash(from, to, capacity);
 		}
 		
 		@Override
 		public boolean equals(Object obj) {
 			Node n = (Node) obj;
 			
-			return (from == n.from && to == n.to && capacity == n.capacity) || (from == n.to && to == n.from && capacity == n.capacity);  
+			return from == n.from && to == n.to && capacity == n.capacity;  
 		}
 		
 	}
@@ -129,8 +129,10 @@ public class Main {
 				adjacent.put(to, new ArrayList<>());				
 			}
 			
-			adjacent.get(from).add(new Node(from, to, capacity));
-			adjacent.get(to).add(new Node(to, from, capacity));
+			Node node = new Node(from, to, capacity);
+			
+			adjacent.get(from).add(node);
+			adjacent.get(to).add(node);
 			
 			maxCapa = Math.max(maxCapa, capacity);
 		}
