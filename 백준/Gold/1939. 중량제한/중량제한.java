@@ -17,7 +17,7 @@ public class Main {
 	
 	static int N,M,start,end;
 	
-	static Map<Integer, List<Node>> adjacent;
+	static List<Node>[] adjacent;
 	
 	static int max;
 	
@@ -40,8 +40,8 @@ public class Main {
 				return true;
 			}
 			
-			for(int i = 0 ; i < adjacent.get(from).size(); i ++) {
-				Node node = adjacent.get(from).get(i);
+			for(int i = 0 ; i < adjacent[from].size(); i ++) {
+				Node node = adjacent[from].get(i);
 				
 				int to = from == node.from ? node.to : node.from;
 				int capacity = node.capacity; 
@@ -65,11 +65,6 @@ public class Main {
 		
 		while(left < right) {
 			int mid = (left + right) / 2;
-			
-			if(mid > adjacent.get(end).get(0).capacity) {
-				right = mid;
-				continue;
-			}
 			
 			if(dfs(mid)) {
 				left = mid + 1;
@@ -113,7 +108,7 @@ public class Main {
 		N = Integer.parseInt(st.nextToken()); 
 		M = Integer.parseInt(st.nextToken());
 		
-		adjacent = new HashMap<>();
+		adjacent = new ArrayList[N+1];
 		
 		int maxCapa = 0;
 		
@@ -126,26 +121,28 @@ public class Main {
 			
 			int capacity = Integer.parseInt(st.nextToken());
 			
-			if(!adjacent.containsKey(from)) {
-				adjacent.put(from, new ArrayList<>());
+			if(adjacent[from] == null) {
+				adjacent[from] = new ArrayList<>();
 			}
 			
-			if(!adjacent.containsKey(to)) {
-				adjacent.put(to, new ArrayList<>());				
+			if(adjacent[to] == null) {
+				adjacent[to] = new ArrayList<>();				
 			}
 			
 			Node node = new Node(from, to, capacity);
 			
-			adjacent.get(from).add(node);
-			adjacent.get(to).add(node);
+			adjacent[from].add(node);
+			adjacent[to].add(node);
 			
 			maxCapa = Math.max(maxCapa, capacity);
 		}
 		
-		for(List<Node> list : adjacent.values()) {
-			Collections.sort(list, (o1, o2)->{
-				return o2.capacity - o1.capacity;
-			});
+		for(List<Node> list : adjacent) {
+			if(list != null) {
+				Collections.sort(list, (o1, o2)->{
+					return o2.capacity - o1.capacity;
+				});
+			}
 		}
 		
 		st = new StringTokenizer(br.readLine());
