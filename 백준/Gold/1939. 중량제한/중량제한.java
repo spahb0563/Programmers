@@ -20,6 +20,12 @@ public class Main {
 	static Stack<Integer> stack = new Stack<>();
 	
 	static int find(int[] arr, int a) {
+		
+		if(arr[a] == 0) {
+			arr[a] = a;
+			return a;
+		}
+		
 		if(a == arr[a]) return a;
 		
 		return arr[a] = find(arr, arr[a]);
@@ -47,10 +53,6 @@ public class Main {
 			int mid = (left + right) / 2;
 			
 			int[] arr = new int[N + 1];
-			
-			for(int i = 0 ; i < arr.length ; i ++) {
-				arr[i] = i;
-			}
 			
 			for(Edge edge : edgeList) {
 				if(edge.weight >= mid) {
