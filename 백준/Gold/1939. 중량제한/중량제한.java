@@ -66,6 +66,11 @@ public class Main {
 		while(left < right) {
 			int mid = (left + right) / 2;
 			
+			if(mid > adjacent.get(end).get(0).capacity) {
+				right = mid;
+				continue;
+			}
+			
 			if(dfs(mid)) {
 				left = mid + 1;
 			}else {
