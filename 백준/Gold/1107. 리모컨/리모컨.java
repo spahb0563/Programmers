@@ -1,19 +1,21 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
 	
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	
-	static List<Integer> list = new ArrayList<>();
+	static int min;
+	
+	static int number;
 	
 	static void combi(int out, int depth, boolean[] isBroken, int r) {
 		if(depth == r) {
-			list.add(out);
+			int count = (out == 0) ? 1 : (int) Math.log10(out) + 1;
 			
+		    min = Math.min(min, Math.abs(number - out) + count);
+		    
 			return;
 		}
 		
@@ -24,43 +26,6 @@ public class Main {
 			combi(out * 10 + i, depth + 1, isBroken, r);
 		}
 	}
-	
-    public static int findLowerBound(List<Integer> list, int target) {
-        int low = 0, high = list.size() - 1;
-        int result = -1; // 찾지 못하면 -1 반환
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-
-            if (list.get(mid) <= target) {
-                result = mid; // 현재 값 저장 (조건 충족)
-                low = mid + 1; // 오른쪽 탐색
-            } else {
-                high = mid - 1; // 왼쪽 탐색
-            }
-        }
-
-        return result;
-    }
-
-    public static int findUpperBound(List<Integer> list, int target) {
-        int low = 0, high = list.size() - 1;
-        int result = -1; // 찾지 못하면 -1 반환
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-
-            if (list.get(mid) > target) {
-                result = mid; // 현재 값 저장 (조건 충족)
-                high = mid - 1; // 왼쪽 탐색
-            } else {
-                low = mid + 1; // 오른쪽 탐색
-            }
-        }
-
-        return result;
-    }
-	
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -78,26 +43,13 @@ public class Main {
 			}
 		}
 		
-		int number = Integer.parseInt(N);
+		number = Integer.parseInt(N);
+		min = Math.abs(number - 100);
 		
-		int min = Math.abs(number - 100);
+		if(!isBroken[0]) min = Math.min(min, number + 1);
 		
-		if(!isBroken[0]) list.add(0);
-
 		for(int i = 1 ; i <= 6 ; i ++) {
 			combi(0, 0, isBroken, i);
-		}
-		
-		int lowerIdx = findLowerBound(list, number);
-		if(lowerIdx != -1) {
-			int lower = list.get(lowerIdx);
-			min = Math.min(min, Integer.toString(lower).length() + Math.abs(lower - number));
-		}
-		
-		int upperIdx = findUpperBound(list, number);
-		if(upperIdx != -1) {
-			int upper = list.get(upperIdx);
-			min = Math.min(min, Integer.toString(upper).length() + Math.abs(upper - number));
 		}
 		
 		System.out.println(min);
