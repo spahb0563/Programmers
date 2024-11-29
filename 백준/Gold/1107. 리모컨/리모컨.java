@@ -8,17 +8,11 @@ public class Main {
 	
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	
-	static List<char[]> list = new ArrayList<>();
-
-	static StringBuffer sb;
+	static List<Integer> list = new ArrayList<>();
 	
-	static void combi(char[] out, int depth, boolean[] isBroken, int r) {
+	static void combi(int out, int depth, boolean[] isBroken, int r) {
 		if(depth == r) {
-			
-			char[] temp = new char[out.length];
-			System.arraycopy(out, 0, temp, 0, out.length);
-			
-			list.add(temp);
+			list.add(out);
 			
 			return;
 		}
@@ -26,19 +20,19 @@ public class Main {
 		for(int i = 0 ; i < 10 ; i ++) {
 			if(isBroken[i]) continue;
 			if(depth == 0 && i == 0) continue;
-			out[depth] = (char) ('0' + i);
 			
-			combi(out, depth + 1, isBroken, r);
+			combi(out * 10 + i, depth + 1, isBroken, r);
 		}
 	}
-    public static int findLowerBound(List<char[]> list, int target) {
+	
+    public static int findLowerBound(List<Integer> list, int target) {
         int low = 0, high = list.size() - 1;
         int result = -1; // 찾지 못하면 -1 반환
 
         while (low <= high) {
             int mid = low + (high - low) / 2;
 
-            if (Integer.parseInt(new String(list.get(mid))) <= target) {
+            if (list.get(mid) <= target) {
                 result = mid; // 현재 값 저장 (조건 충족)
                 low = mid + 1; // 오른쪽 탐색
             } else {
@@ -49,14 +43,14 @@ public class Main {
         return result;
     }
 
-    public static int findUpperBound(List<char[]> list, int target) {
+    public static int findUpperBound(List<Integer> list, int target) {
         int low = 0, high = list.size() - 1;
         int result = -1; // 찾지 못하면 -1 반환
 
         while (low <= high) {
             int mid = low + (high - low) / 2;
 
-            if (Integer.parseInt(new String(list.get(mid))) > target) {
+            if (list.get(mid) > target) {
                 result = mid; // 현재 값 저장 (조건 충족)
                 high = mid - 1; // 왼쪽 탐색
             } else {
@@ -88,25 +82,21 @@ public class Main {
 		
 		int min = Math.abs(number - 100);
 		
-		char[] a = {'0'};
-		
-		if(!isBroken[0]) list.add(a);
+		if(!isBroken[0]) list.add(0);
 
 		for(int i = 1 ; i <= 6 ; i ++) {
-			combi(new char[i], 0, isBroken, i);
+			combi(0, 0, isBroken, i);
 		}
-		
-		
 		
 		int lowerIdx = findLowerBound(list, number);
 		if(lowerIdx != -1) {
-			int lower = Integer.parseInt(new String(list.get(lowerIdx)));
+			int lower = list.get(lowerIdx);
 			min = Math.min(min, Integer.toString(lower).length() + Math.abs(lower - number));
 		}
 		
 		int upperIdx = findUpperBound(list, number);
 		if(upperIdx != -1) {
-			int upper = Integer.parseInt(new String(list.get(upperIdx)));
+			int upper = list.get(upperIdx);
 			min = Math.min(min, Integer.toString(upper).length() + Math.abs(upper - number));
 		}
 		
