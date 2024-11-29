@@ -1,10 +1,6 @@
 import java.util.*;
 
 class Solution {
-    
-    static int[][] points;
-    static int[][] routes;
-    
     static class Node {
         int r,c;
         
@@ -16,9 +12,6 @@ class Solution {
     
     public int solution(int[][] points, int[][] routes) {
         int answer = 0;
-        
-        this.points = points;
-        this.routes = routes;
     
         Queue<Queue<Node>> list = new LinkedList<>();
         
