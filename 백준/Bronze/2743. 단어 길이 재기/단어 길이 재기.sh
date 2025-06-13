@@ -1,0 +1,3 @@
+read str
+
+echo ${#str}
